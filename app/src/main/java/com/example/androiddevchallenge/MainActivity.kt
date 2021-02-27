@@ -18,13 +18,60 @@ package com.example.androiddevchallenge
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.androiddevchallenge.ui.theme.MyTheme
+import androidx.navigation.compose.popUpTo
 
+data class Puppy(
+    val name: String,
+    val summary: String,
+    val description: String)
+
+val puppies = mapOf(
+    "C++" to Puppy(
+        "C++",
+        "Quite Powerful Monster",
+        "One of the most popular language. "
+    ),
+    "Perl" to Puppy(
+        "Perl",
+        "Old Pal",
+        "the most fastest way to make quick hacks like as oneliner"
+    ),
+    "Python" to Puppy(
+        "Python",
+        "For Almost All Purpose",
+        "Quite usable for exploratory data analysis because of Jupyter notebook"
+    ),
+    "Kotlin" to Puppy(
+        "Kotlin",
+        "Newcomer",
+        "learning for the challenge just right now"
+    )
+)
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +86,82 @@ class MainActivity : AppCompatActivity() {
 // Start building your app here!
 @Composable
 fun MyApp() {
+    val navController = rememberNavController()
     Surface(color = MaterialTheme.colors.background) {
-        Text(text = "Ready... Set... GO!")
+        Column(
+            modifier = Modifier.padding(24.dp)
+        ){
+            Header()
+            NavHost(navController, startDestination = "itemsView") {
+                composable("itemsView"){ ItemsView(navController) }
+                composable("detailView/{puppyKey}"){
+                        backStackEntry  -> DetailView(navController, backStackEntry.arguments?.getString("puppyKey"))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Header()
+{
+    val typography = MaterialTheme.typography
+    Text("My Puppies",
+        style = typography.h2)
+}
+
+@Composable
+fun ItemsView(navController: NavHostController)
+{
+    for((key, puppy) in puppies) {
+        Item(navController, puppy)
+    }
+}
+
+@Composable
+fun Item(navController: NavHostController, puppy: Puppy)
+{
+    val cropModifier = Modifier
+        .fillMaxHeight()
+        .fillMaxWidth()
+        .clip(shape = RoundedCornerShape(4.dp))
+    val clickableModifier = Modifier
+        .clickable(onClick = { navController.navigate("detailView/${puppy.name}") })
+    val typography = MaterialTheme.typography
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = clickableModifier) {
+        Text(puppy.name,
+            fontWeight = FontWeight.Bold,
+            style = typography.h2)
+        Spacer(Modifier.size(16.dp))
+        Column(){
+            Text(puppy.summary,
+                style = typography.body1,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis)
+            Text(puppy.description,
+                style = typography.body2,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis)
+        }
+    }
+}
+
+@Composable
+fun DetailView(navController: NavHostController, puppyKey: String?) {
+    val puppy = puppies[puppyKey]
+    val typography = MaterialTheme.typography
+    Column(modifier = Modifier.padding(24.dp)) {
+        Text(puppy!!.name,
+            fontWeight = FontWeight.Bold,
+            style = typography.h2)
+        Text(puppy!!.summary,
+            style = typography.body1)
+        Text(puppy!!.description,
+             style = typography.body2)
+        Button(onClick = {
+            navController.navigate("itemsView")}){
+            Text("Back")
+        }
     }
 }
 
