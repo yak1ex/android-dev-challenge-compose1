@@ -164,8 +164,11 @@ fun DetailView(navController: NavHostController, puppyKey: String?) {
             puppy.description, // assert before
             style = typography.body2
         )
-        Button(onClick = {
-            navController.navigate("itemsView")}) {
+        Button(
+            onClick = {
+                navController.navigate("itemsView")
+            }
+        ) {
             Text("Back")
         }
     }
