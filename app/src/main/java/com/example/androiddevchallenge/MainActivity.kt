@@ -111,8 +111,7 @@ fun Header() {
 }
 
 @Composable
-fun ItemsView(navController: NavHostController)
-{
+fun ItemsView(navController: NavHostController) {
     for ((_, puppy) in puppies) {
         Item(navController, puppy)
     }
@@ -124,19 +123,25 @@ fun Item(navController: NavHostController, puppy: Puppy) {
         .clickable(onClick = { navController.navigate("detailView/${puppy.name}") })
     val typography = MaterialTheme.typography
     Row(verticalAlignment = Alignment.CenterVertically, modifier = clickableModifier) {
-        Text(puppy.name,
+        Text(
+            puppy.name,
             fontWeight = FontWeight.Bold,
-            style = typography.h2)
+            style = typography.h2
+        )
         Spacer(Modifier.size(16.dp))
-        Column(){
-            Text(puppy.summary,
+        Column() {
+            Text(
+                puppy.summary,
                 style = typography.body1,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis)
-            Text(puppy.description,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                puppy.description,
                 style = typography.body2,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis)
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
@@ -146,15 +151,21 @@ fun DetailView(navController: NavHostController, puppyKey: String?) {
     val puppy = puppies[puppyKey]
     val typography = MaterialTheme.typography
     Column(modifier = Modifier.padding(24.dp)) {
-        Text(puppy!!.name,
+        Text(
+            puppy!!.name,
             fontWeight = FontWeight.Bold,
-            style = typography.h2)
-        Text(puppy.summary, // assert before
-            style = typography.body1)
-        Text(puppy.description, // assert before
-             style = typography.body2)
+            style = typography.h2
+        )
+        Text(
+            puppy.summary, // assert before
+            style = typography.body1
+        )
+        Text(
+            puppy.description, // assert before
+            style = typography.body2
+        )
         Button(onClick = {
-            navController.navigate("itemsView")}){
+            navController.navigate("itemsView")}) {
             Text("Back")
         }
     }
