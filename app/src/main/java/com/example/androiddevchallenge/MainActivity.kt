@@ -91,9 +91,10 @@ fun MyApp() {
         ) {
             Header()
             NavHost(navController, startDestination = "itemsView") {
-                composable("itemsView"){ ItemsView(navController) }
-                composable("detailView/{puppyKey}"){
-                        backStackEntry  -> DetailView(navController, backStackEntry.arguments?.getString("puppyKey"))
+                composable("itemsView") { ItemsView(navController) }
+                composable("detailView/{puppyKey}") {
+                    backStackEntry ->
+                    DetailView(navController, backStackEntry.arguments?.getString("puppyKey"))
                 }
             }
         }
@@ -101,24 +102,24 @@ fun MyApp() {
 }
 
 @Composable
-fun Header()
-{
+fun Header() {
     val typography = MaterialTheme.typography
-    Text("My Puppies",
-        style = typography.h2)
+    Text(
+        "My Puppies",
+        style = typography.h2
+    )
 }
 
 @Composable
 fun ItemsView(navController: NavHostController)
 {
-    for((_, puppy) in puppies) {
+    for ((_, puppy) in puppies) {
         Item(navController, puppy)
     }
 }
 
 @Composable
-fun Item(navController: NavHostController, puppy: Puppy)
-{
+fun Item(navController: NavHostController, puppy: Puppy) {
     val clickableModifier = Modifier
         .clickable(onClick = { navController.navigate("detailView/${puppy.name}") })
     val typography = MaterialTheme.typography
